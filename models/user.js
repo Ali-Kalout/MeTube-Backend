@@ -10,7 +10,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    imageUrl: String
+    imageUrl: String,
+    subscriptions: [String], // I subscribe to channel
+    subscribers: [String] // user subscribe to my channel
 });
 
 const User = mongoose.model("User", userSchema);

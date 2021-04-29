@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 
-import authRouter from "./routes/auth.js";
+import channelRouter from "./routes/channel.js";
 import videoRouter from "./routes/video.js";
 import searchRouter from "./routes/search.js";
 
@@ -13,7 +13,7 @@ app.use(bodyParser.json({ limit: "500mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "500mb", extended: true }));
 app.use(cors());
 
-app.use("/signin", authRouter);
+app.use("/channel", channelRouter);
 app.use("/video", videoRouter);
 app.use("/search", searchRouter);
 

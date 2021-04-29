@@ -6,8 +6,10 @@ import getUser from "./../utils/getUser.js";
 const router = express.Router();
 
 router.get("/", async (req, res) => { // get videos
-    const result = [];
-    const videos = await Video.find().sort({ createdAt: -1 }).limit(24);
+    const PAGE_SIZE = 24, result = [];
+    const videos = await Video.find().sort({ createdAt: -1 })
+        // .skip(parseInt(req.query.page) === 1 ? 0 : parseInt(req.query.page) * PAGE_SIZE)
+        .limit(PAGE_SIZE * parseInt(req.query.page) + 1);
 
     for (let i = 0; i < videos.length; i++) {
         let vid = videos[i];
