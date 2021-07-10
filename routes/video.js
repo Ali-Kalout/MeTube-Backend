@@ -5,11 +5,23 @@ import getUser from "./../utils/getUser.js";
 
 const router = express.Router();
 
+router.get("/search", async (req, res) => {
+    const { searchQuery } = req.query;
+    const title = new RegExp(searchQuery, 'i');
+
+    const result = [];
+    const videos = (await Video.find({ title })).concat(await Video.find({ description: title }));
+    for (let i = 0; i < videos.length; i++)
+        result.push({ video: videos[i], creator: await getUser(videos[i].creator) });
+
+    return res.status(200).json(result);
+});
+
 router.get("/", async (req, res) => { // get videos
     const PAGE_SIZE = 24, result = [];
     const videos = await Video.find().sort({ createdAt: -1 })
-        // .skip(parseInt(req.query.page) === 1 ? 0 : parseInt(req.query.page) * PAGE_SIZE)
-        .limit(PAGE_SIZE * parseInt(req.query.page) + 1);
+    // .skip(parseInt(req.query.page) === 1 ? 0 : parseInt(req.query.page) * PAGE_SIZE)
+    // .limit(PAGE_SIZE * parseInt(req.query.page) + 1);
 
     for (let i = 0; i < videos.length; i++) {
         let vid = videos[i];
