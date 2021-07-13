@@ -5,7 +5,15 @@ import getUser from "./../utils/getUser.js";
 
 const router = express.Router();
 
-router.get("/search", async (req, res) => {
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    const video = await Video.findById(id);
+    const creator = await getUser(video.creator);
+
+    return res.status(200).json({ video: video, creator: creator });
+});
+
+router.get("/search", async (req, res) => { // search videos
     const { searchQuery } = req.query;
     const title = new RegExp(searchQuery, 'i');
 
@@ -18,11 +26,13 @@ router.get("/search", async (req, res) => {
 });
 
 router.get("/", async (req, res) => { // get videos
-    const PAGE_SIZE = 24, result = [];
-    const videos = await Video.find().sort({ createdAt: -1 })
-    // .skip(parseInt(req.query.page) === 1 ? 0 : parseInt(req.query.page) * PAGE_SIZE)
-    // .limit(PAGE_SIZE * parseInt(req.query.page) + 1);
+    const { page } = req.query;
+    const LIMIT = 8, startIndex = (Number(page) - 1) * LIMIT; // get starting index of every page
+    const total = await Video.countDocuments({});
 
+    const videos = await Video.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+
+    const result = [];
     for (let i = 0; i < videos.length; i++) {
         let vid = videos[i];
         let creator = await getUser(videos[i].creator);
@@ -30,7 +40,11 @@ router.get("/", async (req, res) => { // get videos
         result.push({ video: vid, creator: creator });
     }
 
-    return res.status(200).json(result);
+    return res.status(200).json({
+        data: result,
+        currentPage: page,
+        numberOfPages: Math.ceil(total / LIMIT)
+    });
 });
 
 router.post("/:id/:action", auth, async (req, res) => { // like / dislike video
