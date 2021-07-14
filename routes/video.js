@@ -13,16 +13,20 @@ router.get("/:id", async (req, res) => {
     return res.status(200).json({ video: video, creator: creator });
 });
 
-router.get("/search", async (req, res) => { // search videos
-    const { searchQuery } = req.query;
-    const title = new RegExp(searchQuery, 'i');
+router.get("/search/:searchQuery", async (req, res) => { // search videos
+    try {
+        const { searchQuery } = req.params;
+        const title = new RegExp(searchQuery, 'i');
 
-    const result = [];
-    const videos = (await Video.find({ title })).concat(await Video.find({ description: title }));
-    for (let i = 0; i < videos.length; i++)
-        result.push({ video: videos[i], creator: await getUser(videos[i].creator) });
+        const result = [];
+        const videos = (await Video.find({ title })).concat(await Video.find({ description: title }));
+        for (let i = 0; i < videos.length; i++)
+            result.push({ video: videos[i], creator: await getUser(videos[i].creator) });
 
-    return res.status(200).json(result);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 router.get("/", async (req, res) => { // get videos
