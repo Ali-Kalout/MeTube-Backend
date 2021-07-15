@@ -11,7 +11,7 @@ const app = express();
 
 app.use(bodyParser.json({ limit: "500mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "500mb", extended: true }));
-// app.use(cors());
+app.use(cors());
 
 app.get("/", (req, res) => res.send("Hello World"));
 
@@ -19,7 +19,7 @@ app.use("/channel", channelRouter);
 app.use("/video", videoRouter);
 app.use("/search", searchRouter);
 
-mongoose.connect("mongodb://localhost:27017/MeTube", {
+mongoose.connect("mongodb+srv://admin-ali:test123@cluster0.8uyec.mongodb.net/MeTube", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,

@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import auth from "./../middleware/auth.js";
 import Video from "./../models/video.js";
 import getUser from "./../utils/getUser.js";
@@ -102,15 +103,24 @@ router.post("/:id/:action", auth, async (req, res) => { // like / dislike video
 });
 
 router.post("/:id", async (req, res) => { // add viewer
-    await Video.findById(req.params.id, (err, doc) => {
-        if (!err) {
-            doc.views += 1;
-            doc.save();
-        }
-    });
+    try {
+        const { id } = req.params;
 
-    return res.status(200);
-})
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return true;
+
+        await Video.findById(id, (err, doc) => {
+            if (!err) {
+                doc.views += 1;
+                doc.save();
+            }
+        });
+
+        return res.status(200);
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 router.post("/", auth, async (req, res) => { // upload video
     try {
