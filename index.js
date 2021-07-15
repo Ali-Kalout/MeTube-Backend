@@ -13,6 +13,8 @@ app.use(bodyParser.json({ limit: "500mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "500mb", extended: true }));
 app.use(cors());
 
+app.get("/", (req, res) => res.send("Hello World"));
+
 app.use("/channel", channelRouter);
 app.use("/video", videoRouter);
 app.use("/search", searchRouter);
