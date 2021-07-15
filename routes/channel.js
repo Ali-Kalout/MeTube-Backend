@@ -3,7 +3,24 @@ import express from "express";
 import User from "./../models/user.js";
 import auth from "./../middleware/auth.js";
 
+import getUser from "./../utils/getUser.js";
+
 const router = express.Router();
+
+router.get("/:id", auth, async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (req.userId !== user.googleId || !user) return res.status(400).json([]);
+
+    const result = [];
+
+    for (let i = 0; i < user.subscriptions.length; i++) {
+        result.push(await getUser(String(user.subscriptions[i])));
+    }
+
+    return res.status(200).json(result);
+})
 
 router.post("/", async (req, res) => {
     try {
