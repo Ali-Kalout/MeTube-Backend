@@ -19,12 +19,11 @@ app.use("/channel", channelRouter);
 app.use("/video", videoRouter);
 app.use("/search", searchRouter);
 
-const port = process.env.PORT || 5000;
 mongoose.connect("mongodb://localhost:27017/MeTube", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false
 })
-    .then(() => app.listen(port, () => console.log("Server running on port : " + port)))
+    .then(() => app.listen(process.env.PORT || 5000, () => console.log("Server running on port : " + port)))
     .catch(error => console.log(error));
