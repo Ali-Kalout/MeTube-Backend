@@ -25,5 +25,5 @@ mongoose.connect("mongodb://localhost:27017/MeTube", {
     useUnifiedTopology: true,
     useFindAndModify: false
 })
-    .then(() => app.listen(process.env.PORT || 5000, () => console.log("Server running on port : " + port)))
+    .then(() => app.listen(process.env.PORT || 5000, () => console.log("Server running!")))
     .catch(error => console.log(error));
