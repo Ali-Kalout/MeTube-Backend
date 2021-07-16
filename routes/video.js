@@ -36,8 +36,10 @@ router.get("/search/:searchQuery", async (req, res) => { // search videos
         const result = [];
         const videos = (await Video.find({ title }).sort({ _id: -1 })).
             concat(await Video.find({ description: title }).sort({ _id: -1 }));
-        for (let i = 0; i < videos.length; i++)
+        for (let i = 0; i < videos.length; i++) {
+            videos[i].selectedFile = "";
             result.push({ video: videos[i], creator: await getUser(videos[i].creator) });
+        }
 
         return res.status(200).json(result);
     } catch (error) {
@@ -56,6 +58,7 @@ router.get("/", async (req, res) => { // get videos
     for (let i = 0; i < videos.length; i++) {
         let vid = videos[i];
         let creator = await getUser(videos[i].creator);
+        vid.selectedFile = "";
 
         result.push({ video: vid, creator: creator });
     }
